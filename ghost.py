@@ -1,5 +1,6 @@
 from enum import Enum
-from .strategies import AgressorStrategy, AmbusherStrategy, WandererStrategy, UnpredictableStrategy
+from .strategies import (AgressorStrategy, AmbusherStrategy,
+                         WandererStrategy, UnpredictableStrategy)
 
 
 class GhostError(Exception):

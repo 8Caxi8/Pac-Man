@@ -51,7 +51,7 @@ class Map:
     def is_wall(self, pos: tuple[int, int], direction: int) -> bool:
         x, y = pos
         return bool(self._maze[y][x] & (1 << direction))
-    
+
     def in_bounds(self, pos: tuple[int, int]) -> bool:
         x, y = pos
         return 0 <= x < self._width and 0 <= y < self._height

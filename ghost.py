@@ -1,4 +1,6 @@
 from enum import Enum
+from .strategies import AgressorStrategy, AmbusherStrategy, WandererStrategy, UnpredictableStrategy
+
 
 class GhostError(Exception):
     pass
@@ -20,10 +22,10 @@ class Ghost():
     def _set_strategy(self, strategy: Strategy) -> None:
         match strategy:
             case Strategy.AGRESSOR:
-                
+                self._behaviour = AgressorStrategy()
             case Strategy.AMBUSHER:
-            
+                self._behaviour = AmbusherStrategy()
             case Strategy.UNPREDICTABLE:
-
+                self._behaviour = UnpredictableStrategy()
             case Strategy.WANDERER:
-            
+                self._behaviour = WandererStrategy()

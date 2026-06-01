@@ -63,3 +63,9 @@ class Map:
             if self.in_bounds((nx, ny)) and not self.is_wall(pos, direction):
                 result.append((nx, ny))
         return result
+
+    def get_width(self) -> int:
+        return self._width
+
+    def get_height(self) -> int:
+        return self._height

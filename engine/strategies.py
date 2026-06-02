@@ -16,15 +16,18 @@ class GhostStrategy(ABC):
 
 class AgressorStrategy(GhostStrategy):
     def move(self, pos: tuple[int, int],
-             player_pos: tuple[int, int]) -> tuple[int, int]:
+             player_pos: tuple[int, int],
+             **kwargs: tuple[int, int]) -> tuple[int, int]:
         return self._map.next_step_toward(pos, player_pos) \
-            or self._map.next_step_toward(pos, self._home)
+            or self._map.next_step_toward(pos, self._home) \
+            or pos
 
 
 class AmbusherStrategy(GhostStrategy):
     def move(self, pos: tuple[int, int],
              player_pos: tuple[int, int],
-             player_dir: tuple[int, int] = (0, 0)) -> tuple[int, int]:
+             player_dir: tuple[int, int] = (0, 0),
+             **kwargs: tuple[int, int]) -> tuple[int, int]:
 
         tx = player_pos[0] + player_dir[0] * 4
         ty = player_pos[1] + player_dir[1] * 4
@@ -33,14 +36,16 @@ class AmbusherStrategy(GhostStrategy):
             max(0, min(self._map.get_height() - 1, ty)),
         )
         return self._map.next_step_toward(pos, target) \
-            or self._map.next_step_toward(pos, self._home)
+            or self._map.next_step_toward(pos, self._home) \
+            or pos
 
 
 class UnpredictableStrategy(GhostStrategy):
     def move(self, pos: tuple[int, int],
              player_pos: tuple[int, int],
              player_dir: tuple[int, int] = (0, 0),
-             blinky_pos: tuple[int, int] = (0, 0)) -> tuple[int, int]:
+             blinky_pos: tuple[int, int] = (0, 0),
+             **kwargs: tuple[int, int]) -> tuple[int, int]:
 
         pivot_x = player_pos[0] + player_dir[0] * 2
         pivot_y = player_pos[1] + player_dir[1] * 2
@@ -51,17 +56,20 @@ class UnpredictableStrategy(GhostStrategy):
                        2 * pivot_y - blinky_pos[1])),
         )
         return self._map.next_step_toward(pos, target) \
-            or self._map.next_step_toward(pos, self._home)
+            or self._map.next_step_toward(pos, self._home) \
+            or pos
 
 
 class WandererStrategy(GhostStrategy):
     CHASE_RADIUS: int = 8
 
     def move(self, pos: tuple[int, int],
-             player_pos: tuple[int, int]) -> tuple[int, int]:
+             player_pos: tuple[int, int],
+             **kwargs: tuple[int, int]) -> tuple[int, int]:
 
         dist = abs(pos[0] - player_pos[0]) + abs(pos[1] - player_pos[1])
         target = player_pos if dist > self.CHASE_RADIUS else self._home
 
         return self._map.next_step_toward(pos, target) \
-            or self._map.next_step_toward(pos, self._home)
+            or self._map.next_step_toward(pos, self._home) \
+            or pos

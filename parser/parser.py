@@ -11,7 +11,7 @@ DEFAULTS = {
     "points_per_ghost": 200,
     "seed": 42,
     "level_max_time": 90,
-    "levels": []
+    "levels": list(range(1, 11))
 }
 
 
@@ -28,7 +28,10 @@ def parser() -> dict[str, object]:
     path = arg[0]
     try:
         with open(path) as f:
-            raw = re.sub(r'^\s*#.*$', '', f.read(), flags=re.MULTILINE)
+            content = f.read()
+            raw = re.sub(r'^\s*#.*$', '', content, flags=re.MULTILINE)
+            raw = re.sub(r'^\s*//.*$', '', raw, flags=re.MULTILINE)
+            raw = re.sub(r'/\*.*?\*/', '', raw, flags=re.DOTALL)
         data = json.loads(raw)
     except FileNotFoundError:
         raise ParserError(f"Config file not found: {path}")
@@ -38,10 +41,16 @@ def parser() -> dict[str, object]:
 
     config = DEFAULTS.copy()
     for key, default in DEFAULTS.items():
-        val = data[0].get(key, default)
-        if not isinstance(val, type(default)):
+        if key not in data:
+            print(f"Missing key '{key}', using default: {default}")
+            config[key] = default
+            continue
+
+        val = data.get(key, default)
+        if not isinstance(val, type(default)) or (key == "levels" and not val):
             print(f"Invalid value for '{key}', using default: {default}")
             config[key] = default
+
         else:
             config[key] = val
 

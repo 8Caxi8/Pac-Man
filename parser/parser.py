@@ -38,7 +38,7 @@ def parser() -> dict[str, object]:
 
     config = DEFAULTS.copy()
     for key, default in DEFAULTS.items():
-        val = data.get(key, default)
+        val = data[0].get(key, default)
         if not isinstance(val, type(default)):
             print(f"Invalid value for '{key}', using default: {default}")
             config[key] = default

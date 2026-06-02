@@ -1,4 +1,4 @@
-from .parser import parser, ParserError
+from parser.parser import parser, ParserError
 
 
 def main() -> None:

@@ -1,6 +1,10 @@
 from collections import deque
 
 
+class MapError(Exception):
+    pass
+
+
 class Map:
     N: int = 0
     E: int = 1
@@ -14,10 +18,35 @@ class Map:
         (-1, 0, W),
     ]
 
-    def __init__(self, maze: list[list[int]], width: int, height: int) -> None:
+    def __init__(self, maze: list[list[int]]) -> None:
+        if not maze or not maze[0]:
+            raise MapError("Maze cannot be empty!")
+
         self._maze = maze
-        self._width = width
-        self._height = height
+        self._width = len(maze[0])
+        self._height = len(maze)
+        self.generate_pacgums()
+
+    def generate_pacgums(self) -> None:
+        self._pacgums = set()
+        self._superpacgums = set()
+        corners = {
+            (0, 0),
+            (self._width - 1, 0),
+            (0, self._height - 1),
+            (self._width - 1, self._height - 1)
+        }
+
+        for x in range(self._width):
+            for y in range(self._height):
+                if self._maze[y][x] == 15:
+                    continue
+
+                if (x, y) in corners:
+                    self._superpacgums.add((x, y))
+                    continue
+
+                self._pacgums.add((x, y))
 
     def next_step_toward(self,
                          pos: tuple[int, int],
@@ -69,3 +98,9 @@ class Map:
 
     def get_height(self) -> int:
         return self._height
+
+    def get_pacgums(self) -> set[tuple[int, int]]:
+        return self._pacgums
+
+    def get_superpacgums(self) -> set[tuple[int, int]]:
+        return self._superpacgums
